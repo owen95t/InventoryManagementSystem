@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>INDEX</title>
+</head>
+<body>
+<h1>INDEX</h1>
+    <ul>
+        {% for brand in allBrands %}
+        <li>{{ brand.brand_name }}</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
