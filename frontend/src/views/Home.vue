@@ -23,5 +23,24 @@ axios.defaults.xsrfCookieName = 'csrftoken';
 
 export default {
   name: 'Home',
+  data() {
+    return{
+      products: [],
+      product: '',
+      search_term: '',
+    }
+  },
+  mounted() {
+
+  },
+  methods: {
+    getList(){
+      axios({
+        method: 'get',
+
+      })
+    },
+
+  }
 }
 </script>

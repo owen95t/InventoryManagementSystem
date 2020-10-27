@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
+    'django_filters',
 
     'django.contrib.postgres',
 
@@ -53,13 +54,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'InventoryManagementSystem.urls'
@@ -87,24 +88,24 @@ WSGI_APPLICATION = 'InventoryManagementSystem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 # DEFAULT THAT CAME PRESET :
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# TODO: SPECIFY PostgreSQL DATABASE SPECS
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': BASE_DIR / '<db_name>',
-        'USER': '<db_user>',
-        'PASSWORD': '<db_password>',
-        'HOST': '<host_name>',
-        'PORT': '<db_port>',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'ims_test_db.sqlite3',
     }
 }
+
+# # TODO: SPECIFY PostgreSQL DATABASE SPECS
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'test_db',
+#         'USER': 'postgres',
+#         'PASSWORD': '2391559',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -155,5 +156,6 @@ CORS_ORIGIN_WHITELIST = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
