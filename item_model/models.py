@@ -28,13 +28,13 @@ class Item(models.Model):
     item_category = models.CharField(max_length=40)
     item_subcategory = models.CharField(max_length=40)
 
-    item_price = models.DecimalField(decimal_places=2, null=False)
-    item_current_price = models.DecimalField(decimal_places=2, default=item_price)
+    item_price = models.DecimalField(decimal_places=2, null=False, max_digits=100000000)
+    item_current_price = models.DecimalField(decimal_places=2, default=item_price, max_digits=100000000)
     item_on_sale = models.BooleanField(default=False)
 
     item_SKU = models.CharField(max_length=5, unique=True)
 
-    item_quantity = models.DecimalField()  # item quantity overall
+    item_quantity = models.IntegerField()  # item quantity overall
 
     # ADD: item quantity in each store
     # ADD: item location
