@@ -32,7 +32,7 @@ class Item(models.Model):
     item_current_price = models.DecimalField(decimal_places=2, default=item_price, max_digits=100000000)
     item_on_sale = models.BooleanField(default=False)
 
-    item_SKU = models.CharField(max_length=5, unique=True)
+    item_sku = models.CharField(max_length=5, unique=True)
 
     item_quantity = models.IntegerField()  # item quantity overall
 
