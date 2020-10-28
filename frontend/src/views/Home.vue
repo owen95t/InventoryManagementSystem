@@ -14,7 +14,7 @@
 
     <div>
       <b-container>
-        <b-table striped bordered ></b-table>
+        <b-table striped bordered responsive="sm" ></b-table>
       </b-container>
     </div>
 
@@ -74,9 +74,9 @@ export default {
           .catch((error) => {
             if (error.response) {
               console.log('RESPONSE ERROR');
-              console.log('ERROR DATA'+error.response.data);
-              console.log('ERROR STATUS'+error.response.status);
-              console.log('ERROR HEADERS' + error.response.headers)
+              console.log('ERROR DATA',error.response.data);
+              console.log('ERROR STATUS',error.response.status);
+              console.log('ERROR HEADERS',error.response.headers);
             }else if (error.request) {
               console.log('REQUEST ERROR');
               console.log(error.request);
