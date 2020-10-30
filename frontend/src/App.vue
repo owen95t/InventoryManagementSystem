@@ -1,32 +1,29 @@
 <template>
-  <div id="app">
-<!--    <div id="nav">-->
-<!--      <router-link to="/">Home</router-link> |-->
-<!--      <router-link to="/about">About</router-link>-->
-<!--    </div>-->
+  <div id="app" >
+    <b-navbar toggleable="lg" variant="light" type="light" class="justify-content-between">
+      <b-navbar-brand><router-link to="/">Brand</router-link></b-navbar-brand>
+      <b-collapse class="nav-collapse" is-nav>
+        <b-nav-item><router-link to="/about">Route 1</router-link></b-nav-item>
+        <b-nav-item><router-link to="/inventorymenu">Inventory</router-link> </b-nav-item>
+        <b-nav-item><router-link to="/transfermenu">Transfers</router-link> </b-nav-item>
+      </b-collapse>
+
+      <b-navbar-nav class="ml-auto">
+<!--        RIGHT SIDE ITEMS    -->
+      </b-navbar-nav>
+
+    </b-navbar>
+
     <router-view/>
+
   </div>
 </template>
 
+<script>
+
+</script>
+
 <style>
-/*#app {*/
-/*  font-family: Avenir, Helvetica, Arial, sans-serif;*/
-/*  -webkit-font-smoothing: antialiased;*/
-/*  -moz-osx-font-smoothing: grayscale;*/
-/*  text-align: center;*/
-/*  color: #2c3e50;*/
-/*}*/
 
-/*#nav {*/
-/*  padding: 30px;*/
-/*}*/
 
-/*#nav a {*/
-/*  font-weight: bold;*/
-/*  color: #2c3e50;*/
-/*}*/
-
-/*#nav a.router-link-exact-active {*/
-/*  color: #42b983;*/
-/*}*/
 </style>

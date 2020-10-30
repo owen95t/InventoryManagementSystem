@@ -1,22 +1,15 @@
 <template>
   <div class="home">
-
-    <b-navbar variant="light" type="light" class="justify-content-between">
-      <b-navbar-brand>Inventory Management System</b-navbar-brand>
-      <b-navbar-nav class="ml-auto">
-        <b-nav-form>
-          <b-form-input class="form-control mr-sm-2" placeholder="Search..." v-model="search_term"></b-form-input>
-          <b-button variant="outline-success my-2 my-sm-2" type="submit" v-on:click="getSearch(search_term)">Search</b-button>
-        </b-nav-form>
-      </b-navbar-nav>
-    </b-navbar>
     <h1 class="title text-center">RETAIL INVENTORY MANAGEMENT</h1>
+
+
 
     <div>
       <b-container>
         <b-table striped bordered responsive="sm" ></b-table>
       </b-container>
     </div>
+
 
   </div>
 </template>
@@ -56,7 +49,7 @@ export default {
       if (this.search_term !== '' || this.search_term !== null) {
         axios({
           method: 'get',
-          url: '' + term,
+          url: 'http://127.0.0.1/...' + term,
           auth: {
             username: 'owen_t',
             password: '2391559Ong'
