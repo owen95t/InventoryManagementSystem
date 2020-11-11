@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal
 
 
 # Create your models here.
@@ -21,18 +22,22 @@ class Item(models.Model):
     # REQ: Requires a brand to create an item. Brand entry must be created first
     item_brand = models.ForeignKey(Brand, to_field='brand_name', on_delete=models.CASCADE)
     # when specifying to_field, the field that its pointing to must be specified UNIQUE=True (makes sense)
+    item_id = models.CharField(max_length=40, null=True)
     item_name = models.CharField(max_length=40)
     item_description = models.CharField(max_length=40)
     item_color = models.CharField(max_length=10)
-    item_date = models.DateTimeField()  # Figure out what the users will want to see in terms of dates
+    item_color_code = models.CharField(max_length=3)
+    item_season = models.CharField(max_length=3, null=True)
+    item_date = models.DateTimeField(null=True)  # Figure out what the users will want to see in terms of dates
     item_category = models.CharField(max_length=40)
-    item_subcategory = models.CharField(max_length=40)
+    item_subcategory = models.CharField(max_length=40, null=True)
 
     item_price = models.DecimalField(decimal_places=2, null=False, max_digits=100000000)
     item_current_price = models.DecimalField(decimal_places=2, default=item_price, max_digits=100000000)
     item_on_sale = models.BooleanField(default=False)
 
     item_sku = models.CharField(max_length=5, unique=True)
+    item_size = models.CharField(max_length=2, blank=True)
 
     item_quantity = models.IntegerField()  # item quantity overall
 
