@@ -2,10 +2,12 @@
   <div id="app" >
     <b-navbar toggleable="lg" variant="light" type="light" class="justify-content-between">
       <b-navbar-brand><router-link to="/">Brand</router-link></b-navbar-brand>
-      <b-collapse class="nav-collapse" is-nav>
-        <b-nav-item><router-link to="/about">Route 1</router-link></b-nav-item>
-        <b-nav-item><router-link to="/inventorymenu">Inventory</router-link> </b-nav-item>
-        <b-nav-item><router-link to="/transfermenu">Transfers</router-link> </b-nav-item>
+
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+      <b-collapse id="nav-collapse" is-nav>
+        <b-nav-item to="/about">About</b-nav-item>
+        <b-nav-item to="/inventorymenu">Inventory</b-nav-item>
+        <b-nav-item to="/transfermenu" >Transfer</b-nav-item>
       </b-collapse>
 
       <b-navbar-nav class="ml-auto">

@@ -12,15 +12,44 @@
               </b-form-group>
             </b-dropdown>
           </b-input-group-prepend>
-          <b-form-input type="submit" class="" v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search..."></b-form-input>
+          <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search..."></b-form-input>
           <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="getSearch(search_term)">Search</b-button></b-input-group-append>
         </b-input-group>
         <b-alert :show="emptySearchAlert" fade variant="danger">
           <h4>Query Returned No Results. Please Try Again</h4>
         </b-alert>
       </b-container>
-      <b-container class="resultscontainer">
+<!--      <h3>{{search_term}}</h3>-->
+<!--      <b-container class="resultscontainer">-->
+<!--        &lt;!&ndash; CONTENT for RESULTS  &ndash;&gt;-->
+<!--        <b-table hover striped bordered responsive="sm" :items="items" :fields="fields">-->
+<!--        </b-table>-->
+<!--      </b-container>-->
+
+      <b-container>
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="rows"
+          :per-page="perPage"
+          aria-controls="my-table"
+          class="justify-content-center"
+          style="margin-top: 15px"
+          first-text="First"
+          last-text="Last">
+        </b-pagination>
+        <b-container class="resultscontainer">
         <!-- CONTENT for RESULTS  -->
+        <b-table
+            hover
+            striped
+            bordered
+            responsive="sm"
+            :items="items"
+            :per-page="perPage"
+            :current-page="currentPage"
+            :fields="fields">
+        </b-table>
+      </b-container>
       </b-container>
     </div>
 
@@ -37,9 +66,10 @@ export default {
   name: 'InventoryMenu',
   data() {
     return{
+      currentPage: 1,
+      perPage: 5,
       search_term: '',
-      <!-- TODO: import config instead of typing out all of this -->
-      config: [{
+      fields: [{
         key: 'item_brand',
         label: 'Brand',
         sortable: true
@@ -50,26 +80,14 @@ export default {
         key: 'item_name',
         label: 'Name'
       }, {
-        key: 'item_description',
-        label: 'Description',
-      }, {
-        key: 'item_color',
-        label: 'Color'
-      }, {
         key: 'item_color_code',
         label: 'Color Code'
       }, {
-        key: 'item_season',
-        label: 'Season'
-      }, {
-        key: 'item_date',
-        label: 'Date'
+        key: 'item_size',
+        label: 'Size',
       }, {
         key: 'item_category',
         label: 'Category'
-      }, {
-        key: 'item_subcategory',
-        label: 'Subcategory'
       }, {
         key: 'item_price',
         label: 'Price'
@@ -77,14 +95,8 @@ export default {
         key: 'item_current_price',
         label: 'Current Price'
       }, {
-        key: 'item_on_sale',
-        label: 'On Sale'
-      }, {
         key: 'item_sku',
         label: 'SKU'
-      }, {
-        key: 'item_size',
-        label: 'Size',
       }, {
         key: 'item_quantity',
         label: 'Total Quantity'
@@ -99,14 +111,13 @@ export default {
     }
   },
   mounted() {
-
   },
   methods: {
-    getSearch() {
+    getSearch(term) {
       if (this.search_term !== '' || this.search_term !== null) {
         axios({
           method: 'get',
-          url: 'http://127.0.0.1:8000/Item/'
+          url: 'http://127.0.0.1:8000/Item/?search='+term
         }).then(response =>{
           console.log(response.data);
           if(response.data){
@@ -132,6 +143,11 @@ export default {
         })
       }
     }
+  },
+  computed: {
+    rows() {
+      return this.items.length
+    }
   }
 }
 </script>
@@ -140,9 +156,9 @@ export default {
 
 
 .resultscontainer {
-  border: 3px seagreen solid;
-  border-radius: 10px;
-  margin-top: 10px;
-  visibility: collapse;
+  /*border: 3px seagreen solid;*/
+  /*border-radius: 10px;*/
+  margin-top: 5px;
+  /*visibility: collapse;*/
 }
 </style>

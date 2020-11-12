@@ -17,6 +17,8 @@ class BrandViewSet(viewsets.ModelViewSet):
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all().order_by('item_brand__brand_name', 'item_name')
     serializer_class = ItemSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields =['item_brand__brand_name', 'item_name', 'item_id', 'item_name']
 
 
 class OrderViewSet(viewsets.ModelViewSet):
