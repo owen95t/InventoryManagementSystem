@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from item_model.models import Brand, Item
+from item_model.models import Brand, Item, ItemID
 from order_model.models import Order, OrderItem
 from transfer_model.models import Transfer, TransferItems
 from customer_model.models import Customer
@@ -10,6 +10,15 @@ class BrandSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Brand
         fields = '__all__'
+
+class ItemIDSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ItemID
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        rep = super(ItemIDSerializer, self).to_representation(instance)
+        rep['itemid_brand'] = instance.itemid_brand.brand_name
 
 
 class ItemSerializer(serializers.HyperlinkedModelSerializer):

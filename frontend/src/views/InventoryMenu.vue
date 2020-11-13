@@ -47,9 +47,15 @@
             :items="items"
             :per-page="perPage"
             :current-page="currentPage"
-            :fields="fields">
+            :fields="fields"
+            @row-clicked="toggleDetails">
+          <template #cell(show_details)="row">
+            <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+              {{row.detailsShowing? 'Hide' : 'Show'}} Details
+            </b-button>
+          </template>
         </b-table>
-      </b-container>
+        </b-container>
       </b-container>
     </div>
 
@@ -113,6 +119,9 @@ export default {
   mounted() {
   },
   methods: {
+    toggleDetails(row){
+      row._showDetails = !row._showDetails
+    },
     getSearch(term) {
       if (this.search_term !== '' || this.search_term !== null) {
         axios({

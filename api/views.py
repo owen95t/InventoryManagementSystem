@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, filters
 from .serializers import *
-from item_model.models import Brand, Item
+from item_model.models import Brand, Item, ItemID
 from order_model.models import Order, OrderItem
 from transfer_model.models import Transfer, TransferItems
 from customer_model.models import Customer
@@ -14,11 +14,18 @@ class BrandViewSet(viewsets.ModelViewSet):
     serializer_class = BrandSerializer
 
 
+class ItemIDViewSet(viewsets.ModelViewSet):
+    queryset = ItemID.objects.all().order_by('itemid_brand')
+    serializer_class = ItemIDSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['item_id']
+
+
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all().order_by('item_brand__brand_name', 'item_name')
     serializer_class = ItemSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields =['item_brand__brand_name', 'item_name', 'item_id', 'item_name']
+    search_fields =['item_brand__brand_name', 'item_name', 'item_id__item_id', 'item_name']
 
 
 class OrderViewSet(viewsets.ModelViewSet):
