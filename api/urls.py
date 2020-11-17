@@ -5,6 +5,7 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r'Brand', views.BrandViewSet)
 router.register(r'Item', views.ItemViewSet)
+router.register(r'ItemID', views.ItemIDViewSet)
 router.register(r'Order', views.OrderViewSet)
 router.register(r'OrderItem', views.OrderItemViewSet)
 router.register(r'Transfer', views.TransferViewSet)

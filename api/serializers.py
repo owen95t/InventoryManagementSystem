@@ -11,6 +11,7 @@ class BrandSerializer(serializers.HyperlinkedModelSerializer):
         model = Brand
         fields = '__all__'
 
+
 class ItemIDSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ItemID
@@ -19,6 +20,7 @@ class ItemIDSerializer(serializers.HyperlinkedModelSerializer):
     def to_representation(self, instance):
         rep = super(ItemIDSerializer, self).to_representation(instance)
         rep['itemid_brand'] = instance.itemid_brand.brand_name
+        return rep
 
 
 class ItemSerializer(serializers.HyperlinkedModelSerializer):

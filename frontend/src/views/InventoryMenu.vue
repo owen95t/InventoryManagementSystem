@@ -8,24 +8,18 @@
           <b-input-group-prepend>
             <b-dropdown text="Filter">
               <b-form-group>
-                <b-radio-group :options="search_options" style="padding: 3px"></b-radio-group>
+                <b-form-radio-group :options="search_options" style="padding: 3px" v-model="picked"></b-form-radio-group>
               </b-form-group>
             </b-dropdown>
           </b-input-group-prepend>
-          <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search..."></b-form-input>
-          <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="getSearch(search_term)">Search</b-button></b-input-group-append>
+          <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="resultSelection(search_term)" placeholder="Search..."></b-form-input>
+          <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="resultSelection(search_term)">Search</b-button></b-input-group-append>
         </b-input-group>
+        <h3>RADIO SELECTION: {{picked}}</h3>
         <b-alert :show="emptySearchAlert" fade variant="danger">
           <h4>Query Returned No Results. Please Try Again</h4>
         </b-alert>
       </b-container>
-<!--      <h3>{{search_term}}</h3>-->
-<!--      <b-container class="resultscontainer">-->
-<!--        &lt;!&ndash; CONTENT for RESULTS  &ndash;&gt;-->
-<!--        <b-table hover striped bordered responsive="sm" :items="items" :fields="fields">-->
-<!--        </b-table>-->
-<!--      </b-container>-->
-
       <b-container>
         <b-pagination
           v-model="currentPage"
@@ -44,10 +38,10 @@
             striped
             bordered
             responsive="sm"
-            :items="items"
+            :items="search_results"
             :per-page="perPage"
             :current-page="currentPage"
-            :fields="fields"
+            :fields="this.fieldSelection()"
             @row-clicked="toggleDetails">
           <template #cell(show_details)="row">
             <b-button size="sm" @click="row.toggleDetails" class="mr-2">
@@ -108,12 +102,32 @@ export default {
         label: 'Total Quantity'
       }],
       emptySearchAlert: false,
-      items: [],
+      search_results: [],
       search_options: [
-        {text: 'Brand'},
-        {text: 'SKU'},
-        {text: 'Name'},
+        {text: 'Brand', value: 'brand'},
+        {text: 'SKU', value: 'sku'},
+        {text: 'Name', value: 'name'},
+        {text: 'ID', value: 'id'}
       ],
+      resultsByID: [],
+      picked: '',
+      idFields: [{
+        key: 'itemid_brand.brand_name',
+        label: 'Brand'
+      }, {
+        key: 'item_id',
+        label: 'Item ID'
+      }],
+      idBrands: [{
+        key: 'brand_name',
+        label: 'Brand'
+      }, {
+        key: 'supplier_name',
+        label: 'Supplier'
+      }, {
+        key: 'url',
+        label: 'Link'
+      }]
     }
   },
   mounted() {
@@ -121,6 +135,72 @@ export default {
   methods: {
     toggleDetails(row){
       row._showDetails = !row._showDetails
+    },
+    //v:on method here
+    resultSelection(term) {
+      if(this.picked === 'id'){
+        this.searchByID(term)
+      }else if(this.picked === 'brand'){
+        this.searchByBrand(term)
+      }else if(this.picked === 'sku'){
+        this.searchBySKU(term)
+      }else if(this.picked === 'name'){
+        this.searchByName(term)
+      }
+    },
+    searchByID(term) {
+      if (this.search_term !== '' || this.search_term !== null) {
+        axios({
+          method: 'get',
+          url: 'http://127.0.0.1:8000/ItemID/?search='+term
+        }).then(response =>{
+          if(response.data){
+            console.log('ID SEARCH')
+            this.reset()
+            this.resultsByID = response.data
+            console.log(response.data)
+          }
+        })
+      }
+    },
+    searchByBrand(term) {
+      if (this.search_term !== '' || this.search_term !== null) {
+        axios({
+          method: 'get',
+          url: 'http://127.0.0.1:8000/Brand/?search='+term
+        }).then(response => {
+          if (response.data) {
+            this.reset()
+            this.search_results = response.data
+          }
+        })
+      }
+    },
+    searchBySKU(term) {
+      if (this.search_term !== '' || this.search_term !== null) {
+        axios({
+          method: 'get',
+          url: 'http://127.0.0.1:8000/Item/?search='+term //incomplete
+        }).then(response => {
+          if (response.data) {
+            this.reset()
+            this.search_results = response.data
+          }
+        })
+      }
+    },
+    searchByName(term) {
+      if (this.search_term !== '' || this.search_term !== null) {
+        axios({
+          method: 'get',
+          url: 'http://127.0.0.1:8000/Item/?search='+term //incomplete
+        }).then(response => {
+          if (response.data) {
+            this.reset()
+            this.search_results = response.data
+          }
+        })
+      }
     },
     getSearch(term) {
       if (this.search_term !== '' || this.search_term !== null) {
@@ -130,10 +210,10 @@ export default {
         }).then(response =>{
           console.log(response.data);
           if(response.data){
-            this.emptySearchAlert = false;
-            this.items = response.data
+            this.reset()
+            this.search_results = response.data
           }
-          if (this.items.length === 0) {
+          if (this.search_results.length === 0) {
             console.log('RESPONSE EMPTY')
             this.emptySearchAlert = true
 
@@ -151,11 +231,26 @@ export default {
           }
         })
       }
+    },
+    reset() {
+      this.search_results.length = 0
+      this.emptySearchAlert = false
+    },
+    fieldSelection() {
+      if(this.picked === 'id'){
+        return this.idFields
+      }else if(this.picked === 'brand'){
+        return this.idBrands
+      }else if(this.picked === 'sku'){
+        return this.fields
+      }else if(this.picked === 'name'){
+        return this.fields
+      }
     }
   },
   computed: {
     rows() {
-      return this.items.length
+      return this.search_results.length
     }
   }
 }
