@@ -1,5 +1,5 @@
 <template>
-  <div class="inventorymenu">
+  <div class="inventorymenu" @keydown.esc="resetAll()">
     <h1 class="text-center">Inventory Menu</h1>
     <!--    Search Bar + Alert    -->
     <div style="padding-bottom: 25px">
@@ -10,12 +10,14 @@
               <b-form-group>
                 <b-form-radio-group :options="search_options" style="padding: 3px" v-model="picked"></b-form-radio-group>
               </b-form-group>
+              <b-button v-on:click="resetRadio()">Clear</b-button>
             </b-dropdown>
           </b-input-group-prepend>
           <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="resultSelection(search_term)" placeholder="Search..."></b-form-input>
           <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="resultSelection(search_term)">Search</b-button></b-input-group-append>
         </b-input-group>
         <h3>RADIO SELECTION: {{picked}}</h3>
+        <h3>TERM: {{search_term}}</h3>
         <b-alert :show="emptySearchAlert" fade variant="danger">
           <h4>Query Returned No Results. Please Try Again</h4>
         </b-alert>
@@ -38,18 +40,24 @@
             striped
             bordered
             responsive="sm"
+            selectable
             :items="search_results"
             :per-page="perPage"
             :current-page="currentPage"
             :fields="this.fieldSelection()"
-            @row-clicked="toggleDetails">
-          <template #cell(show_details)="row">
-            <b-button size="sm" @click="row.toggleDetails" class="mr-2">
-              {{row.detailsShowing? 'Hide' : 'Show'}} Details
-            </b-button>
-          </template>
+            @row-clicked="infoTest">
+<!--          <template #cell(action)="row">-->
+<!--            <b-button @click="info(row.item, row.index, $event.target)">>-->
+<!--              Info-->
+<!--            </b-button>-->
+<!--          </template>-->
         </b-table>
         </b-container>
+
+<!--        MODAL -->
+        <b-modal :id="modalInfo.id" :title="modalInfo.title" ok-only @hide="resetModal()">
+          <pre>{{modalInfo.content}}</pre>
+        </b-modal>
       </b-container>
     </div>
 
@@ -127,7 +135,12 @@ export default {
       }, {
         key: 'url',
         label: 'Link'
-      }]
+      }],
+      modalInfo:{
+        id: 'modal-info',
+        title: '',
+        content: '',
+      }
     }
   },
   mounted() {
@@ -138,14 +151,17 @@ export default {
     },
     //v:on method here
     resultSelection(term) {
+      this.reset() //calls reset() which resets data field to empty everytime search is commited
       if(this.picked === 'id'){
         this.searchByID(term)
       }else if(this.picked === 'brand'){
         this.searchByBrand(term)
       }else if(this.picked === 'sku'){
         this.searchBySKU(term)
-      }else if(this.picked === 'name'){
-        this.searchByName(term)
+      }else if (this.picked === 'name') {
+        this.searchByName(term);
+      } else {
+        this.getSearch(term)
       }
     },
     searchByID(term) {
@@ -156,7 +172,6 @@ export default {
         }).then(response =>{
           if(response.data){
             console.log('ID SEARCH')
-            this.reset()
             this.resultsByID = response.data
             console.log(response.data)
           }
@@ -170,8 +185,23 @@ export default {
           url: 'http://127.0.0.1:8000/Brand/?search='+term
         }).then(response => {
           if (response.data) {
-            this.reset()
             this.search_results = response.data
+          }
+          if (this.search_results.length === 0) {
+            console.log('RESPONSE EMPTY')
+            this.emptySearchAlert = true
+
+          }
+        }).catch((error) => {
+          if (error.response) {
+            console.log('RESPONSE ERROR');
+            console.log(error.response.data)
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          }else if (error.request) {
+            console.log('REQUEST ERROR', error.request);
+          } else {
+            console.log('ERROR IN GET ITEMS', error.message);
           }
         })
       }
@@ -183,7 +213,6 @@ export default {
           url: 'http://127.0.0.1:8000/Item/?search='+term //incomplete
         }).then(response => {
           if (response.data) {
-            this.reset()
             this.search_results = response.data
           }
         })
@@ -196,7 +225,6 @@ export default {
           url: 'http://127.0.0.1:8000/Item/?search='+term //incomplete
         }).then(response => {
           if (response.data) {
-            this.reset()
             this.search_results = response.data
           }
         })
@@ -210,7 +238,6 @@ export default {
         }).then(response =>{
           console.log(response.data);
           if(response.data){
-            this.reset()
             this.search_results = response.data
           }
           if (this.search_results.length === 0) {
@@ -245,7 +272,30 @@ export default {
         return this.fields
       }else if(this.picked === 'name'){
         return this.fields
+      }else{
+        return this.fields
       }
+    },
+    resetRadio() {
+      this.picked = ""
+    },
+    resetModal() {
+      this.modalInfo.title = ''
+      this.modalInfo.content = ''
+    },
+    info(item, index, button) {
+      this.modalInfo.title = ''
+      this.modalInfo.content = JSON.stringify(item, null, 2)
+      this.$root.$emit('bv::show::modal', this.modalInfo.id, button)
+    },
+    resetAll() {
+      this.reset();
+      this.resetRadio();
+      this.resetModal();
+      console.log('PAGE RESET')
+    },
+    infoTest(item, index) {
+      console.log("Item: "+item.item_name + " index: " + index)
     }
   },
   computed: {

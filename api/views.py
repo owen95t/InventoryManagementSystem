@@ -12,6 +12,8 @@ from customer_model.models import Customer
 class BrandViewSet(viewsets.ModelViewSet):
     queryset = Brand.objects.all().order_by('brand_name')
     serializer_class = BrandSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['brand_name']
 
 
 class ItemIDViewSet(viewsets.ModelViewSet):

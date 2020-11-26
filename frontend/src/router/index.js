@@ -27,6 +27,16 @@ const routes = [
     path: '/inventorymenu',
     name: 'Inventory Menu',
     component: () => import('../views/InventoryMenu')
+  },
+  {
+    path: '/ordermenu',
+    name: 'Order Menu',
+    component: () => import('../views/OrderMenu')
+  },
+  {
+    path: '/customermenu',
+    name: 'Customer Menu',
+    component: () => import('../views/CustomerMenu')
   }
 ]
 
