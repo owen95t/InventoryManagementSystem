@@ -279,7 +279,7 @@ export default {
       }
     },
     resetRadio() {
-      this.picked = ""
+      this.picked = ''
     },
     resetModal() {
       this.modalInfo.title = ''
@@ -315,7 +315,6 @@ export default {
     rows() {
       return this.search_results.length
     },
-    //todo: create an array for listOptions that stores text and value. Text should be size. Value should be SKU
   },
   watch: {
     dropDownSelected: function () {
