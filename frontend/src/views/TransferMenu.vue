@@ -22,6 +22,28 @@
       </b-container>
     </div>
 <!--    Table     -->
+    <b-container>
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="rows"
+          :per-page="perPage"
+          aria-controls="my-table"
+          class="justify-content-center"
+          style="margin-top: 15px"
+          first-text="First"
+          last-text="Last">
+        </b-pagination>
+        <b-table
+          hover
+          bordered
+          responsive="sm"
+          :items="search_results"
+          :per-page="perPage"
+          :current-page="currentPage"
+          :fields="this.fields"
+          @row-clicked="info">
+        </b-table>
+      </b-container>
 <!--    MODAL     -->
   </div>
 </template>
@@ -39,7 +61,6 @@ export default {
     return {
       currentPage: 1,
       perPage: 5,
-      fields: [], //for TABLE
       initial_data: '',
       search_term: '',
       emptySearchAlert: false,
@@ -47,7 +68,22 @@ export default {
       search_options: '',
       search_results: '',
       modalTable: '',
-
+      fields: [{
+        key: 'transfer_id',
+        label: 'Transfer ID'
+      }, {
+        key: 'location_to',
+        label: 'To'
+      }, {
+        key: 'location_from',
+        label: 'From'
+      }, {
+        key: 'date_created',
+        label: 'Created on'
+      }, {
+        key: 'date_completed',
+        label: 'Completed on'
+      }]
     }
   },
   methods: {
@@ -101,10 +137,18 @@ export default {
     },
     getModalSearch() {
 
+    },
+    info() {
+
     }
   },
   mounted() {
     this.getAllTransfers()
+  },
+  computed: {
+    rows() {
+      return this.search_results.length
+    }
   }
 }
 </script>

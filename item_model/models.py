@@ -6,6 +6,7 @@ from decimal import Decimal
 
 class Brand(models.Model):
     brand_name = models.CharField(max_length=30, unique=True)
+    brand_abbre = models.CharField(max_length=3, unique=True)
     supplier_name = models.CharField(max_length=30)
     url = models.URLField()  # uses URLValidator
 

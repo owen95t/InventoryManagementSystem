@@ -18,11 +18,11 @@
         </b-input-group>
 <!--        <h3>RADIO SELECTION: {{picked}}</h3>-->
 <!--        <h3>TERM: {{search_term}}</h3>-->
-        <b-alert :show="emptySearchAlert" fade variant="danger">
+        <b-alert :show="emptySearchAlert" fade variant="danger" style="margin-top: 10px">
           <h4>Query Returned No Results. Please Try Again</h4>
         </b-alert>
       </b-container>
-      <b-container>
+      <b-container v-show="search_results.length>0">
         <b-pagination
           v-model="currentPage"
           :total-rows="rows"
@@ -43,24 +43,21 @@
             :per-page="perPage"
             :current-page="currentPage"
             :fields="this.fieldSelection()"
-            @row-clicked="infoTest">
+            @row-clicked="info">
         </b-table>
         </b-container>
 
         <!--  MODAL   -->
-        <b-modal :id="modalInfo.id" :title="modalInfo.title" ok-only @hide="resetModal()">
+        <b-modal v-if="this.listOptions.length>0" :id="modalInfo.id" :title="modalInfo.title" ok-only @hide="resetModal()">
           <template v-if="this.picked === ''"> <!-- assume search by ID-->
-<!--            <pre>{{modalInfo.content}}</pre>-->
-<!--            <pre>{{listOptions}}</pre>-->
             <div>
-              <div>Selected: {{dropDownSelected}}</div>
+              <div>Select Size: </div>
               <b-form-select v-model="dropDownSelected" :options="options"></b-form-select>
-<!--              <div>listOption: {{this.listOptions}}</div>-->
             </div>
-            <div id="info">
-                <div>Item Name: {{this.chosenItem.item_name}}</div>
-                <div>Item Size: {{this.chosenItem.item_size}}</div>
-                <div>Item SKU: {{this.chosenItem.item_sku}}</div>
+            <div id="info" class="modalinfo">
+              <div>Item Name: {{this.chosenItem.item_name}}</div>
+              <div>Item Size: {{this.chosenItem.item_size}}</div>
+              <div>Item SKU: {{this.chosenItem.item_sku}}</div>
             </div>
             <div id="availability>">
 
@@ -92,6 +89,13 @@ export default {
       perPage: 5,
       search_term: '',
       fields: [{
+        key: 'itemid_brand',
+        label: 'Brand',
+      }, {
+        key: 'item_id',
+        label: 'Style ID'
+      }],
+      nameFields: [{
         key: 'item_brand',
         label: 'Brand',
         sortable: true
@@ -214,12 +218,15 @@ export default {
           if(response.data){
             console.log('GET SEARCH: ' + response.data);
             this.search_results = response.data
-            this.idRequest(term)
-          }
-          if (this.search_results.length === 0) {
-            console.log('RESPONSE EMPTY')
-            this.emptySearchAlert = true
-            //if empty, search by SKU
+
+            if (this.search_results.length === 0) {
+              console.log('getSearch RESPONSE EMPTY');
+              console.log('Commence search by sku')
+              this.searchSKU(term)
+            }
+            // else {
+            //  this.idRequest(term);
+            // }
           }
         }).catch((error) => {
           if (error.response) {
@@ -231,6 +238,23 @@ export default {
             console.log('REQUEST ERROR', error.request);
           } else {
             console.log('ERROR IN GET SEARCH', error.message);
+          }
+        })
+      }
+    },
+    searchSKU(term) {
+      if (this.search_term !== '' || this.search_term !== null) {
+        axios({
+          method: 'get',
+          url: 'http://127.0.0.1:8000/Item/?search='+term
+        }).then(response =>{
+          console.log('SEARCH SKU')
+          this.search_results = response.data
+          if (this.search_results.length === 0) {
+            console.log('SEARCH SKU EMPTY')
+            this.emptySearchAlert = true
+          }else{
+            this.fields = this.nameFields
           }
         })
       }
@@ -270,10 +294,8 @@ export default {
     fieldSelection() {
       if(this.picked === 'brand'){
         return this.idBrands
-      }else if(this.picked === 'sku'){
-        return this.fields
       }else if(this.picked === 'name'){
-        return this.fields
+        return this.nameFields
       }else{
         return this.fields
       }
@@ -284,8 +306,11 @@ export default {
     resetModal() {
       this.modalInfo.title = ''
       this.modalInfo.content = ''
+      this.listOptions = ''
+      this.dropDownSelected = ''
     },
     info(item, index) {
+      this.idRequest(this.search_term)
       console.log("Item: "+item.item_name + " SKU: " + item.item_sku + " index: " + index)
       // this.chosenItem = item
       this.modalInfo.title = ''
@@ -299,9 +324,10 @@ export default {
       this.resetModal();
       console.log('PAGE RESET')
     },
-    infoTest(item, index) {
-      this.info(item, index)
-    },
+    // infoTest(item, index) {
+    //   this.idRequest(this.search_term)
+    //   this.info(item, index)
+    // },
     optionListCreate(list) {
       for (var i = 0; i <= list.length; i++) {
         this.options[i] = {
@@ -336,5 +362,10 @@ export default {
   /*border-radius: 10px;*/
   margin-top: 5px;
   /*visibility: collapse;*/
+}
+
+.modalinfo {
+  border: 2px solid;
+  margin-top: 5px;
 }
 </style>
