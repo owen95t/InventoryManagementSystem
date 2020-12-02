@@ -19,7 +19,7 @@ class ItemIDSerializer(serializers.HyperlinkedModelSerializer):
 
     def to_representation(self, instance):
         rep = super(ItemIDSerializer, self).to_representation(instance)
-        rep['itemid_brand'] = instance.itemid_brand.brand_name
+        rep['itemid_brand'] = instance.itemid_brand.brand_abbre
         return rep
 
 
@@ -31,7 +31,7 @@ class ItemSerializer(serializers.HyperlinkedModelSerializer):
     # to show name when serialized instead of an api link
     def to_representation(self, instance):
         rep = super(ItemSerializer, self).to_representation(instance)
-        rep['item_brand'] = instance.item_brand.brand_name
+        rep['item_brand'] = instance.item_brand.brand_abbre
 
         if instance.item_on_sale:
             rep['item_on_sale'] = "Yes"
@@ -48,6 +48,11 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
 
     def to_representation(self, instance):
         rep = super(OrderSerializer, self).to_representation(instance)
+
+        if instance.order_fulfilled:
+            rep['order_fulfilled'] = "Yes"
+        elif not instance.order_fulfilled:
+            rep['order_fulfilled'] = "No"
 
         if instance.order_paid:
             rep['order_paid'] = "Yes"

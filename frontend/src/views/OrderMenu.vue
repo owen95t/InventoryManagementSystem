@@ -33,7 +33,7 @@
           hover
           bordered
           responsive="sm"
-          :items="search_results"
+          :items="formattedRows"
           :per-page="perPage"
           :current-page="currentPage"
           :fields="this.fields"
@@ -45,6 +45,10 @@
 </template>
 
 <script>
+import axios from 'axios'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+axios.defaults.xsrfCookieName = 'csrftoken';
+
 export default {
 name: "OrderMenu",
   data() {
@@ -63,7 +67,7 @@ name: "OrderMenu",
         key: 'order_date',
         label: 'Order Date'
       }, {
-        key: 'customer.first_name' + 'customer.last_name',
+        key: 'customer',
         label: 'Customer name'
       }, {
         key: 'order_fulfilled',
@@ -75,10 +79,29 @@ name: "OrderMenu",
     }
   },
   methods: {
-    getSearch() {
-      if(this.search_results.length===0){
-        this.emptySearchAlert = true
-      }
+    getAll() {
+      axios({
+        method: 'get',
+        url: 'http://127.0.0.1:8000/Order'
+      }).then(response => {
+        if (response.data) {
+          this.search_results = response.data
+        }
+      })
+    },
+    getSearch(term) {
+      this.resetAll()
+      axios({
+        method: 'get',
+        url: 'http://127.0.0.1:8000/Order/?search=' + term
+      }).then(response => {
+        if (response.data) {
+          this.search_results = response.data
+        }
+        if (response.data.length === 0) {
+          this.emptySearchAlert = true
+        }
+      })
 
     },
     getModalSearch() {
@@ -87,14 +110,38 @@ name: "OrderMenu",
     info() {
 
     },
+    getVariant(status1, status2) {
+      if (status1=='Yes' && status2=='Yes') {
+        return 'success'
+      }else if (status1=='No' && status2=='Yes') {
+        return 'warning'
+      }else if (status1=='No' && status2=='No') {
+        return 'danger'
+      }
+    },
     resetRadio() {
       this.picked = ''
+    },
+    resetAll() {
+      this.resetRadio()
+      this.emptySearchAlert = false
+      this.search_results = ''
     }
   },
   computed: {
     rows() {
       return this.search_results.length
+    },
+    formattedRows() {
+      if(!this.search_results) [];
+      return this.search_results.map(item => {
+        item._rowVariant = this.getVariant(item.order_fulfilled, item.order_paid)
+        return item
+      })
     }
+  },
+  mounted() {
+    this.getAll()
   }
 }
 </script>

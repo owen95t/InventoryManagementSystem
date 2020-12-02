@@ -18,7 +18,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, to_field='order_id', on_delete=models.CASCADE)
-    order_item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    order_item = models.ForeignKey(Item, to_field='item_sku', on_delete=models.CASCADE)
     quantity = models.IntegerField()
 
 # The field on the related object that the relation is to.

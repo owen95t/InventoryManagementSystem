@@ -2,7 +2,7 @@
   <div class="transfermenu">
     <h1 class="text-center">Transfer Menu</h1>
 <!--    Search Bar + Alert    -->
-    <div style="padding-bottom: 25px">
+    <div>
       <b-container>
         <b-input-group>
           <b-input-group-prepend>
@@ -16,7 +16,7 @@
           <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search..."></b-form-input>
           <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="getSearch(search_term)">Search</b-button></b-input-group-append>
         </b-input-group>
-        <b-alert :show="emptySearchAlert" fade variant="danger">
+        <b-alert :show="emptySearchAlert" fade variant="danger" style="margin-top: 10px">
           <h4>Query Returned No Results. Please Try Again</h4>
         </b-alert>
       </b-container>
@@ -83,7 +83,8 @@ export default {
       }, {
         key: 'date_completed',
         label: 'Completed on'
-      }]
+      }],
+      testData: '',
     }
   },
   methods: {
@@ -94,11 +95,12 @@ export default {
     getAllTransfers(){
       axios({
         method: 'get',
-        url: ''//TODO enter transfer URL for getAllTransfer
+        url: 'http://127.0.0.1:8000/Transfer/'
       }).then(response => {
         if (response.data) {
           console.log('initial: ' + response.data);
-          this.initial_data = response.data
+          this.search_results = response.data
+          this.testData = this.formattedItems()
         }
       }).catch((error) => {
         if (error.response) {
@@ -111,13 +113,15 @@ export default {
       if (this.search_term !== '' || this.search_term !== null) {
         axios({
           method: 'get',
-          url: ''+term//TODO enter transfer URL for getSearch (Transfer)
+          url: 'http://127.0.0.1:8000/Transfer/?search='+term
         }).then(response => {
           if (response.data) {
             console.log('RESPONSE: '+response.data)
             this.search_results = response.data
             if (this.search_results.length === 0) {
               this.emptySearchAlert = true
+            }else if (this.search_results.length !== 0) {
+              this.emptySearchAlert = false
             }
           }
         }).catch((error) => {
@@ -140,6 +144,14 @@ export default {
     },
     info() {
 
+    },
+    getVariant(status) {
+      if (status==='Yes') {
+        return 'success'
+      }
+      if (status){
+        return 'danger'
+      }
     }
   },
   mounted() {
@@ -148,6 +160,13 @@ export default {
   computed: {
     rows() {
       return this.search_results.length
+    },
+    formattedItems() {
+      if(!this.search_results) [];
+      return this.search_results.map(item => {
+        item._rowVariant = this.getVariant(item.complete_status)
+        return item
+      })
     }
   }
 }

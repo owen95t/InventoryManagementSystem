@@ -16,8 +16,6 @@
           <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="resultSelection(search_term)" placeholder="Search..."></b-form-input>
           <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="resultSelection(search_term)">Search</b-button></b-input-group-append>
         </b-input-group>
-<!--        <h3>RADIO SELECTION: {{picked}}</h3>-->
-<!--        <h3>TERM: {{search_term}}</h3>-->
         <b-alert :show="emptySearchAlert" fade variant="danger" style="margin-top: 10px">
           <h4>Query Returned No Results. Please Try Again</h4>
         </b-alert>
@@ -86,7 +84,7 @@ export default {
   data() {
     return{
       currentPage: 1,
-      perPage: 5,
+      perPage: 7,
       search_term: '',
       fields: [{
         key: 'itemid_brand',
@@ -131,28 +129,10 @@ export default {
       search_results: [],
       search_options: [
         {text: 'Brand', value: 'brand'},
-        // {text: 'SKU', value: 'sku'},
         {text: 'Name', value: 'name'},
       ],
       resultsByID: [],
       picked: '',
-      idFields: [{
-        key: 'itemid_brand.brand_name',
-        label: 'Brand'
-      }, {
-        key: 'item_id',
-        label: 'Item ID'
-      }],
-      idBrands: [{
-        key: 'brand_name',
-        label: 'Brand'
-      }, {
-        key: 'supplier_name',
-        label: 'Supplier'
-      }, {
-        key: 'url',
-        label: 'Link'
-      }],
       modalInfo:{
         id: 'modal-info',
         title: '',
@@ -162,7 +142,8 @@ export default {
       dropDownSelected: '',
       chosenItem: '',
       options: [],
-      computedModal: {}
+      computedModal: {},
+      modalShow: false
     }
   },
   mounted() {
@@ -271,7 +252,7 @@ export default {
             this.optionListCreate(this.listOptions)
           }
           if (this.listOptions.length === 0) {
-            console.log('LIST OF ITEMS EMPTY')
+            console.log('LIST OF ITEMS EMPTY: idRequest')
           }
         }).catch((error) => {
           if (error.response) {
@@ -280,7 +261,7 @@ export default {
             console.log(error.response.status);
             console.log(error.response.headers);
           }else if (error.request) {
-            console.log('REQUEST ERROR', error.request);
+            console.log('REQUEST ERROR for idRequest', error.request);
           } else {
             console.log('ERROR IN GET ITEMS', error.message);
           }
@@ -311,6 +292,7 @@ export default {
     },
     info(item, index) {
       this.idRequest(this.search_term)
+
       console.log("Item: "+item.item_name + " SKU: " + item.item_sku + " index: " + index)
       // this.chosenItem = item
       this.modalInfo.title = ''

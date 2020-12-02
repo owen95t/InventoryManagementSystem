@@ -33,6 +33,8 @@ class ItemViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['order_id', 'customer__first_name', 'customer__last_name']
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
@@ -43,13 +45,19 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 class TransferViewSet(viewsets.ModelViewSet):
     queryset = Transfer.objects.all()
     serializer_class = TransferSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['transfer_id']
 
 
 class TransferItemViewSet(viewsets.ModelViewSet):
     queryset = TransferItems.objects.all()
     serializer_class = TransferItemSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['transfer__transfer_id']
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all().order_by('first_name', 'last_name')
     serializer_class = CustomerSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields =['first_name', 'last_name', 'phone_number']
