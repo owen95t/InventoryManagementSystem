@@ -63,6 +63,9 @@ name: "CustomerMenu",
       }, {
         key: 'phone_number',
         label: 'Phone number'
+      }, {
+        key: 'email',
+        label: 'Email'
       }],
       order_history: '',
       modalInfo: '',
@@ -74,6 +77,16 @@ name: "CustomerMenu",
       this.resetAll()
       this.getSearch(term)
       console.log('test')
+    },
+    getAll() {
+      axios({
+        method: 'get',
+        url: 'http://127.0.0.1:8000/Customer/'
+      }).then(response => {
+        if (response.data) {
+          this.search_results = response.data
+        }
+      })
     },
     getSearch(term) {
       axios({
@@ -114,6 +127,9 @@ name: "CustomerMenu",
     rows() {
       return this.search_results.length
     }
+  },
+  mounted() {
+    this.getAll()
   }
 }
 </script>

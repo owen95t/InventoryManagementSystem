@@ -20,7 +20,7 @@
           <h4>Query Returned No Results. Please Try Again</h4>
         </b-alert>
       </b-container>
-      <b-container v-show="search_results.length>0">
+      <b-container>
         <b-pagination
           v-model="currentPage"
           :total-rows="rows"
@@ -46,25 +46,26 @@
         </b-container>
 
         <!--  MODAL   -->
-        <b-modal v-if="this.listOptions.length>0" :id="modalInfo.id" :title="modalInfo.title" ok-only @hide="resetModal()">
-          <template v-if="this.picked === ''"> <!-- assume search by ID-->
+        <b-modal :id="modalInfo.id" :title="modalInfo.title" ok-only @hide="resetModal()" ref="modal" data-target="myModal" rel="preload">
+          <template> <!-- assume search by ID-->
             <div>
               <div>Select Size: </div>
               <b-form-select v-model="dropDownSelected" :options="options"></b-form-select>
             </div>
+            <div style="margin-top: 20px">Item Information: </div>
             <div id="info" class="modalinfo">
               <div>Item Name: {{this.chosenItem.item_name}}</div>
               <div>Item Size: {{this.chosenItem.item_size}}</div>
               <div>Item SKU: {{this.chosenItem.item_sku}}</div>
             </div>
-            <div id="availability>">
-
+            <div style="margin-top: 20px">Item Availability: </div>
+            <div id="availability" class="modalinfo">
+              <div>VAN: 1</div>
+              <div>EDM: 2</div>
+              <div>CAL: 0</div>
+              <div>TOR: 1</div>
             </div>
           </template>
-          <template v-if="this.picked === 'sku' "> <!-- assume search by SKU. MUST SET picked to sku if search is empty after search by id is done-->
-
-          </template>
-
         </b-modal>
         <!--  END MODAL  -->
       </b-container>
@@ -143,12 +144,17 @@ export default {
       chosenItem: '',
       options: [],
       computedModal: {},
-      modalShow: false
+      modalShow: false,
+      modalKey: 0,
     }
   },
   mounted() {
   },
   methods: {
+    forceRerender() {
+      this.modalKey += 1
+      console.log(this.modalKey)
+    },
     resultSelection(term) {
       this.resetAll()
       this.reset() //calls reset() which resets data field to empty everytime search is committed
@@ -240,7 +246,7 @@ export default {
         })
       }
     },
-    idRequest(term) {
+    async idRequest(term) {
       if (this.search_term !== '' || this.search_term !== null) {
         axios({
           method: 'get',
@@ -285,20 +291,22 @@ export default {
       this.picked = ''
     },
     resetModal() {
+      console.log('reset modal called')
       this.modalInfo.title = ''
       this.modalInfo.content = ''
-      this.listOptions = ''
+      this.listOptions.length = 0
+      this.options.length = 0
       this.dropDownSelected = ''
+      this.modalKey = 0
     },
     info(item, index) {
-      this.idRequest(this.search_term)
-
-      console.log("Item: "+item.item_name + " SKU: " + item.item_sku + " index: " + index)
-      // this.chosenItem = item
+      this.$root.$emit('bv::show::modal', this.modalInfo.id)
+      console.log("Item: "+item + "index: " + index)
       this.modalInfo.title = ''
       // this.modalInfo.content = JSON.stringify(item, null, 2)
       this.modalInfo.content = item
-      this.$root.$emit('bv::show::modal', this.modalInfo.id)
+      //$('#myModal').on()
+      this.idRequest(item.item_id)
     },
     resetAll() {
       this.reset();
@@ -306,10 +314,6 @@ export default {
       this.resetModal();
       console.log('PAGE RESET')
     },
-    // infoTest(item, index) {
-    //   this.idRequest(this.search_term)
-    //   this.info(item, index)
-    // },
     optionListCreate(list) {
       for (var i = 0; i <= list.length; i++) {
         this.options[i] = {
@@ -317,7 +321,7 @@ export default {
           value: this.listOptions[i].item_sku
         }
       }
-    }
+    },
   },
   computed: {
     rows() {
@@ -328,7 +332,6 @@ export default {
     dropDownSelected: function () {
       for (var i = 0; i <= this.listOptions.length; i++){
         if(this.listOptions[i].item_sku === this.dropDownSelected){
-          console.log('TRUE')
           this.chosenItem = this.listOptions[i]
         }
       }
