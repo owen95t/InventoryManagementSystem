@@ -41,7 +41,8 @@
             :per-page="perPage"
             :current-page="currentPage"
             :fields="this.fieldSelection()"
-            @row-clicked="info">
+            @row-clicked="info"
+            :key="modalKey">
         </b-table>
         </b-container>
 
@@ -87,7 +88,8 @@ export default {
       currentPage: 1,
       perPage: 7,
       search_term: '',
-      fields: [{
+      fields: '',
+      idFields: [{
         key: 'itemid_brand',
         label: 'Brand',
       }, {
@@ -126,6 +128,10 @@ export default {
         key: 'item_quantity',
         label: 'Total Quantity'
       }],
+      brandFields: [{
+        key: 'itemid_brand',
+        label: 'Brand'
+      }],
       emptySearchAlert: false,
       search_results: [],
       search_options: [
@@ -159,12 +165,28 @@ export default {
       this.resetAll()
       this.reset() //calls reset() which resets data field to empty everytime search is committed
       if(this.picked === 'brand') {
-        console.log('not done')
-        // this.searchByBrand(term)
+        console.log('search by BRAND')
+        this.searchByBrand(term)
       } else if(this.picked === 'name'){
+        console.log('search by NAME')
         this.searchByName(term)
       } else {
+        console.log('generic SEARCH')
         this.getSearch(term)
+      }
+    },
+    searchByBrand(term) {
+      if (this.search_term !== '' || this.search_term !== null) {
+        axios({
+          method: 'get',
+          url: 'http://127.0.0.1:8000/Brand/?search='+term
+        }).then(response => {
+          if (response.data.length === 0) {
+            this.emptySearchAlert = true
+          }
+          this.search_results = response.data;
+
+        })
       }
     },
     searchByName(term) {
@@ -280,14 +302,19 @@ export default {
     },
     fieldSelection() {
       if(this.picked === 'brand'){
-        return this.idBrands
+        return this.brandFields
       }else if(this.picked === 'name'){
         return this.nameFields
       }else{
-        return this.fields
+        return this.idFields
       }
     },
     resetRadio() {
+      console.log('resetRadio')
+      this.resetModal()
+      this.modalKey += 1
+      this.search_results.length = 0
+      console.log(this.search_results)
       this.picked = ''
     },
     resetModal() {
@@ -309,8 +336,8 @@ export default {
       this.idRequest(item.item_id)
     },
     resetAll() {
+      this.fields = ''
       this.reset();
-      this.resetRadio();
       this.resetModal();
       console.log('PAGE RESET')
     },
@@ -324,7 +351,7 @@ export default {
     },
   },
   computed: {
-    rows() {
+    rows(){
       return this.search_results.length
     },
   },
@@ -335,7 +362,15 @@ export default {
           this.chosenItem = this.listOptions[i]
         }
       }
-    }
+    },
+    // search_term: function () {
+    //   this.reset()
+    //   this.resetAll()
+    // }
+    // picked: function () {
+    //   this.fields = ''
+    //   this.search_results = ''
+    // }
   }
 }
 </script>

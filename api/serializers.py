@@ -40,6 +40,10 @@ class ItemSerializer(serializers.HyperlinkedModelSerializer):
 
         return rep
 
+    def get_queryset(self):
+        brand_name = self.kwargs['brand_name']
+        return Item.objects.filter(item_brand__brand_name=brand_name)
+
 
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

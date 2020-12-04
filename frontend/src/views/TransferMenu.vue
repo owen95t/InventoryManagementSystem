@@ -118,6 +118,7 @@ export default {
           if (response.data) {
             console.log('RESPONSE: '+response.data)
             this.search_results = response.data
+            this.search_results = this.formattedItems()
             if (this.search_results.length === 0) {
               this.emptySearchAlert = true
             }else if (this.search_results.length !== 0) {

@@ -5,7 +5,7 @@
     <div style="padding-bottom: 25px">
       <b-container>
         <b-input-group>
-          <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="searchHandler(search_term)" placeholder="Search by phone number or email"></b-form-input>
+          <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="searchHandler(search_term)" placeholder="Search by phone number or email. Default is phone number"></b-form-input>
           <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="searchHandler(search_term)">Search</b-button></b-input-group-append>
         </b-input-group>
         <b-alert :show="emptySearchAlert" fade variant="danger">
