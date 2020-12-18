@@ -34,6 +34,19 @@
           @row-clicked="info">
         </b-table>
       </b-container>
+
+      <b-modal :id="modalInfo.id" :title="modalInfo.title" ok-only @hide="resetModal()" ref="modal" data-target="myModal" rel="preload">
+        <template>
+          {{this.modalInfo.title="Customer Information"}}
+          <div style="margin-bottom: 10px"></div>
+<!--          <pre>{{this.modalInfo.content}}</pre>-->
+          <div>Customer Name: {{this.modalInfo.content.first_name + " " + this.modalInfo.content.last_name}}</div>
+          <div>Customer ID: {{ this.modalInfo.content.customer_id }}</div>
+          <div>Customer Phone Number: {{this.modalInfo.content.phone_number}}</div>
+          <div>Customer Email: {{this.modalInfo.content.email? this.modalInfo.content.email:"None"}}</div>
+        </template>
+      </b-modal>
+
     </div>
   </div>
 </template>
@@ -54,6 +67,11 @@ name: "CustomerMenu",
       search_term: '',
       search_results: {},
       emptySearchAlert: false,
+      modalInfo: {
+        title: '',
+        id: 'modal-info',
+        content: ''
+      },
       fields: [{
         key: 'first_name',
         label: 'First name'
@@ -68,7 +86,6 @@ name: "CustomerMenu",
         label: 'Email'
       }],
       order_history: '',
-      modalInfo: '',
 
     }
   },
@@ -104,8 +121,9 @@ name: "CustomerMenu",
     getModalSearch() {
 
     },
-    info(item, index) {
-      console.log(item + index)
+    info(item) {
+      this.modalInfo.content = item
+      this.$root.$emit('bv::show::modal', this.modalInfo.id)
     },
     resetRadio() {
       this.picked = ''

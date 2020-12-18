@@ -3,7 +3,7 @@
     <h1 class="title text-center">RETAIL INVENTORY MANAGEMENT</h1>
 
 
-
+    <h2 class="text-center">Welcome!</h2>
     <div>
       <b-container>
         <b-table striped bordered responsive="sm" ></b-table>

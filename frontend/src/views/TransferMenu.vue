@@ -13,7 +13,7 @@
               <b-button v-on:click="resetRadio()">Clear</b-button>
             </b-dropdown>
           </b-input-group-prepend>
-          <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search..."></b-form-input>
+          <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search by Transfer ID"></b-form-input>
           <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="getSearch(search_term)">Search</b-button></b-input-group-append>
         </b-input-group>
         <b-alert :show="emptySearchAlert" fade variant="danger" style="margin-top: 10px">
@@ -42,9 +42,29 @@
           :current-page="currentPage"
           :fields="this.fields"
           @row-clicked="info">
+          <template v-slot:row-details="row">
+            {{row}}
+            <div>Hello</div>
+          </template>
         </b-table>
       </b-container>
 <!--    MODAL     -->
+    <b-modal :id="modalInfo.id" :title="modalInfo.title" ok-only @hide="resetModal()" ref="modal" data-target="myModal" rel="preload">
+      <template>
+        {{this.modalInfo.title="Transfer Information"}}
+        <div style="margin-bottom: 10px"></div>
+<!--        <pre>{{this.modalInfo.content}}</pre>-->
+        <div>Transfer ID: {{this.modalInfo.content.transfer_id}}</div>
+        <div>Transfer From: {{this.modalInfo.content.location_from}}</div>
+        <div style="margin-bottom: 10px">Transfer To: {{this.modalInfo.content.location_to}}</div>
+
+        <div>Transfer created on: {{this.modalInfo.content.date_created}}</div>
+        <div>Transfer completed: {{this.modalInfo.content.complete_status}}</div>
+
+        <div></div>
+
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -68,6 +88,11 @@ export default {
       search_options: '',
       search_results: '',
       modalTable: '',
+      modalInfo: {
+        id: 'model-info',
+        title: '',
+        content: ''
+      },
       fields: [{
         key: 'transfer_id',
         label: 'Transfer ID'
@@ -143,8 +168,10 @@ export default {
     getModalSearch() {
 
     },
-    info() {
+    info(item) {
+      this.modalInfo.content = item
 
+      this.$root.$emit('bv::show::modal', this.modalInfo.id)
     },
     getVariant(status) {
       if (status==='Yes') {
@@ -153,6 +180,10 @@ export default {
       if (status){
         return 'danger'
       }
+    },
+    toggleDetails(row) {
+      row._showDetails = !row._showDetails
+
     }
   },
   mounted() {

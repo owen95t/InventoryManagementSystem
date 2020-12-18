@@ -48,15 +48,16 @@
 
         <!--  MODAL   -->
         <b-modal :id="modalInfo.id" :title="modalInfo.title" ok-only @hide="resetModal()" ref="modal" data-target="myModal" rel="preload">
-          <template> <!-- assume search by ID-->
+          <template v-if="this.picked==''"> <!-- assume search by ID-->
+            {{this.modalInfo.title='Info and Availabilities'}}
             <div>
               <div>Select Size: </div>
-              <b-form-select v-model="dropDownSelected" :options="options"></b-form-select>
+              <b-form-select v-model="dropDownSelected" :options="fake_options"></b-form-select>
             </div>
             <div style="margin-top: 20px">Item Information: </div>
             <div id="info" class="modalinfo">
               <div>Item Name: {{this.chosenItem.item_name}}</div>
-              <div>Item Size: {{this.chosenItem.item_size}}</div>
+              <div>Item Size: {{ this.dropDownSelected}}</div>
               <div>Item SKU: {{this.chosenItem.item_sku}}</div>
             </div>
             <div style="margin-top: 20px">Item Availability: </div>
@@ -65,6 +66,16 @@
               <div>EDM: 2</div>
               <div>CAL: 0</div>
               <div>TOR: 1</div>
+            </div>
+          </template>
+          <template v-if="this.picked=='name'">
+            {{this.modalInfo.title='Availabilities'}}
+            <div>Availability By Location: </div>
+            <div id="infoName" class="modalinfo">
+              <div>EDM: </div>
+              <div>VAN: </div>
+              <div>CAL: </div>
+              <div>TOR: </div>
             </div>
           </template>
         </b-modal>
@@ -152,6 +163,25 @@ export default {
       computedModal: {},
       modalShow: false,
       modalKey: 0,
+      fake_options: [{
+        text: '7',
+        value: '7'
+      }, {
+        text: '8',
+        value: '8'
+      }, {
+        text: '9',
+        value: '9'
+      }, {
+        text: '10',
+        value: '10'
+      }, {
+        text: '11',
+        value: '11'
+      }, {
+        text: '12',
+        value: '12'
+      }]
     }
   },
   mounted() {
@@ -363,13 +393,9 @@ export default {
         }
       }
     },
-    // search_term: function () {
-    //   this.reset()
-    //   this.resetAll()
-    // }
     // picked: function () {
-    //   this.fields = ''
-    //   this.search_results = ''
+    //   console.log('watching: picked changed')
+    //   this.resetRadio()
     // }
   }
 }
