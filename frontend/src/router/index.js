@@ -37,6 +37,16 @@ const routes = [
     path: '/customermenu',
     name: 'Customer Menu',
     component: () => import('../views/CustomerMenu')
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('../views/Admin')
+  },
+  {
+    path: '/admin/item',
+    name: 'Item',
+    component: () => import('../views/adminView/Item')
   }
 ]
 

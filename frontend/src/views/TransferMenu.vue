@@ -152,7 +152,7 @@ export default {
           }
         }).catch((error) => {
           if (error.response) {
-            console.log('SEARCH ERROR')
+            console.log('getSEARCH ERROR')
             console.log(error.response)
             console.log(error.response.data)
           }
