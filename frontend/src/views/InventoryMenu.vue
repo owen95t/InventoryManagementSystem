@@ -13,7 +13,7 @@
               <b-button v-on:click="resetRadio()">Clear</b-button>
             </b-dropdown>
           </b-input-group-prepend>
-          <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="resultSelection(search_term)" placeholder="Search..."></b-form-input>
+          <b-form-input v-model="search_term" v-on:keyup.enter="resultSelection(search_term)" placeholder="Search..."></b-form-input>
           <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="resultSelection(search_term)">Search</b-button></b-input-group-append>
         </b-input-group>
         <b-alert :show="emptySearchAlert" fade variant="danger" style="margin-top: 10px">
@@ -336,10 +336,11 @@ export default {
       }
     },
     async idReq(term) {
+      console.log("idReq Called")
       try {
         await axios.get('http://127.0.0.1:8000/Item/?search=' + term).then((response) => {
           if (response.data) {
-            console.log("idReq response data: " + response.data)
+            // console.log("idReq response data: " + response.data)
             this.listOptions = response.data
             this.optionListCreate(this.listOptions)
           }
@@ -396,8 +397,6 @@ export default {
       this.modalInfo.title = ''
       // this.modalInfo.content = JSON.stringify(item, null, 2)
       this.modalInfo.content = item
-
-      console.log("info" + item.item_id)
     },
     resetAll() {
       this.fields = ''
@@ -406,8 +405,6 @@ export default {
       console.log('PAGE RESET')
     },
     optionListCreate(list) {
-      console.log("optionListCreate list.length: "+list.length)
-      console.log(list[0].item_size)
       for (let i = 0; i < list.length; i++) {
         this.options.push({
           text: list[i].item_size,
@@ -423,11 +420,17 @@ export default {
   },
   watch: {
     dropDownSelected() {
-      for (var i = 0; i <= this.listOptions.length; i++){
-        if(this.listOptions[i].item_sku === this.dropDownSelected){
-          this.chosenItem = this.listOptions[i]
+      try {
+        for (let i = 0; i <= this.listOptions.length; i++){
+          if(this.listOptions[i].item_sku === this.dropDownSelected){ // TODO : figure out how to fix this error
+            this.chosenItem = this.listOptions[i]
+          }
         }
+      } catch (e){
+        console.log(e)
+        console.log(e.response.data)
       }
+
     },
     // picked: function () {
     //   console.log('watching: picked changed')

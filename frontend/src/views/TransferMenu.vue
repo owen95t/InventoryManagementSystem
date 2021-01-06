@@ -13,7 +13,7 @@
               <b-button v-on:click="resetRadio()">Clear</b-button>
             </b-dropdown>
           </b-input-group-prepend>
-          <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search by Transfer ID"></b-form-input>
+          <b-form-input v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search by Transfer ID"></b-form-input>
           <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="getSearch(search_term)">Search</b-button></b-input-group-append>
         </b-input-group>
         <b-alert :show="emptySearchAlert" fade variant="danger" style="margin-top: 10px">
@@ -170,7 +170,7 @@ export default {
     },
     info(item) {
       this.modalInfo.content = item
-
+      //TODO : implement proper transfer modal
       this.$root.$emit('bv::show::modal', this.modalInfo.id)
     },
     getVariant(status) {
@@ -181,10 +181,6 @@ export default {
         return 'danger'
       }
     },
-    toggleDetails(row) {
-      row._showDetails = !row._showDetails
-
-    }
   },
   mounted() {
     this.getAllTransfers()

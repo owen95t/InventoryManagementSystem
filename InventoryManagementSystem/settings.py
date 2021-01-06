@@ -95,7 +95,7 @@ DATABASES = {
     }
 }
 
-# # TODO: SPECIFY PostgreSQL DATABASE SPECS
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -150,8 +150,7 @@ CORS_ORIGIN_WHITELIST = [
     'https://localhost:3000',
     'http://localhost:8080',
     'http://192.168.0.10:8080',
-'http://192.168.1.33:8080',
-
+    'http://192.168.1.33:8080',
 ]
 
 REST_FRAMEWORK = {
