@@ -150,6 +150,7 @@ CORS_ORIGIN_WHITELIST = [
     'https://localhost:3000',
     'http://localhost:8080',
     'http://192.168.0.10:8080',
+'http://192.168.1.33:8080',
 
 ]
 

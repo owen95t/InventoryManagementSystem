@@ -50,24 +50,36 @@
         <b-modal :id="modalInfo.id" :title="modalInfo.title" ok-only @hide="resetModal()" ref="modal" data-target="myModal" rel="preload">
           <template v-if="this.picked==''"> <!-- assume search by ID-->
             {{this.modalInfo.title='Info and Availabilities'}}
+            <div class="text-center">
+              <b-spinner variant="primary" label="Spinning" v-if="loading"></b-spinner>
+            </div>
+<!--            <pre>-->
+<!--              {{this.listOptions}}-->
+<!--            </pre>-->
             <div>
               <div>Select Size: </div>
-              <b-form-select v-model="dropDownSelected" :options="fake_options"></b-form-select>
+              <b-form-select v-model="dropDownSelected" :options="options"></b-form-select>
+<!--              <select v-model="dropDownSelected.item_sku">-->
+<!--                <option v-for="item in listOptions" :value="item.item_size" v-bind:key="item.item_id">-->
+<!--                  {{item.item_size}}-->
+<!--                </option>-->
+<!--              </select>-->
             </div>
             <div style="margin-top: 20px">Item Information: </div>
             <div id="info" class="modalinfo">
               <div>Item Name: {{this.chosenItem.item_name}}</div>
-              <div>Item Size: {{ this.dropDownSelected}}</div>
+              <div>Item Size: {{ this.chosenItem.item_size}}</div>
               <div>Item SKU: {{this.chosenItem.item_sku}}</div>
             </div>
             <div style="margin-top: 20px">Item Availability: </div>
             <div id="availability" class="modalinfo">
-              <div>VAN: 1</div>
-              <div>EDM: 2</div>
-              <div>CAL: 0</div>
-              <div>TOR: 1</div>
+              <div>VAN: </div>
+              <div>EDM: </div>
+              <div>CAL: </div>
+              <div>TOR: </div>
             </div>
           </template>
+
           <template v-if="this.picked=='name'">
             {{this.modalInfo.title='Availabilities'}}
             <div>Availability By Location: </div>
@@ -181,16 +193,13 @@ export default {
       }, {
         text: '12',
         value: '12'
-      }]
+      }],
+      loading: true,
     }
   },
   mounted() {
   },
   methods: {
-    forceRerender() {
-      this.modalKey += 1
-      console.log(this.modalKey)
-    },
     resultSelection(term) {
       this.resetAll()
       this.reset() //calls reset() which resets data field to empty everytime search is committed
@@ -326,6 +335,23 @@ export default {
         })
       }
     },
+    async idReq(term) {
+      try {
+        await axios.get('http://127.0.0.1:8000/Item/?search=' + term).then((response) => {
+          if (response.data) {
+            console.log("idReq response data: " + response.data)
+            this.listOptions = response.data
+            this.optionListCreate(this.listOptions)
+          }
+        }).catch((er) => {
+          console.log("idReq ERROR: " + er)
+        }).finally(() => {
+          this.loading = false
+        });
+      } catch (ex){
+        console.log("idReq error ex: " + ex)
+      }
+    },
     reset() {
       this.search_results.length = 0
       this.emptySearchAlert = false
@@ -355,15 +381,23 @@ export default {
       this.options.length = 0
       this.dropDownSelected = ''
       this.modalKey = 0
+      this.chosenItem = ''
     },
-    info(item, index) {
-      this.$root.$emit('bv::show::modal', this.modalInfo.id)
-      console.log("Item: "+item + "index: " + index)
+    async info(item, index) {
+      try {
+        this.idReq(item.item_id);
+      } catch (e){
+        console.log(e)
+      } finally {
+        this.$root.$emit('bv::show::modal', this.modalInfo.id)
+      }
+
+      console.log("Item: " + item + "index: " + index)
       this.modalInfo.title = ''
       // this.modalInfo.content = JSON.stringify(item, null, 2)
       this.modalInfo.content = item
-      //$('#myModal').on()
-      this.idRequest(item.item_id)
+
+      console.log("info" + item.item_id)
     },
     resetAll() {
       this.fields = ''
@@ -372,11 +406,13 @@ export default {
       console.log('PAGE RESET')
     },
     optionListCreate(list) {
-      for (var i = 0; i <= list.length; i++) {
-        this.options[i] = {
-          text: this.listOptions[i].item_size,
-          value: this.listOptions[i].item_sku
-        }
+      console.log("optionListCreate list.length: "+list.length)
+      console.log(list[0].item_size)
+      for (let i = 0; i < list.length; i++) {
+        this.options.push({
+          text: list[i].item_size,
+          value: list[i].item_sku
+        })
       }
     },
   },
@@ -386,7 +422,7 @@ export default {
     },
   },
   watch: {
-    dropDownSelected: function () {
+    dropDownSelected() {
       for (var i = 0; i <= this.listOptions.length; i++){
         if(this.listOptions[i].item_sku === this.dropDownSelected){
           this.chosenItem = this.listOptions[i]
