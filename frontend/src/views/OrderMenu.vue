@@ -11,7 +11,7 @@
             <b-button v-on:click="resetRadio()">Clear</b-button>
           </b-dropdown>
         </b-input-group-prepend>
-        <b-form-input type="submit" v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search..."></b-form-input>
+        <b-form-input v-model="search_term" v-on:keyup.enter="getSearch(search_term)" placeholder="Search..."></b-form-input>
         <b-input-group-append><b-button variant="outline-success" type="submit" v-on:click="getSearch(search_term)">Search</b-button></b-input-group-append>
       </b-input-group>
       <b-alert :show="emptySearchAlert" fade variant="danger" style="margin-top: 10px">
@@ -67,7 +67,13 @@ name: "OrderMenu",
     return{
       currentPage: 1,
       perPage: 5,
-      search_options: '',
+      search_options: [{
+        text: 'Test1',
+        value: 'Test1'
+      }, {
+        text: 'Test2',
+        value: 'Test2'
+      }],
       picked: '',
       search_term: '',
       search_results: '',
@@ -104,15 +110,30 @@ name: "OrderMenu",
     }
   },
   methods: {
-    getAll() {
-      axios({
-        method: 'get',
-        url: 'http://127.0.0.1:8000/Order'
-      }).then(response => {
-        if (response.data) {
-          this.search_results = response.data
-        }
-      })
+    // getAll() {
+    //   axios({
+    //     method: 'get',
+    //     url: 'http://127.0.0.1:8000/Order/'
+    //   }).then(response => {
+    //     if (response.data) {
+    //       this.search_results = response.data
+    //       this.search_results = this.formattedRows()
+    //     }
+    //   })
+    // },
+    async getAll() {
+      try {
+        await axios.get('http://127.0.0.1:8000/Order/').then((response) => {
+          if (response.data) {
+            this.search_results = response.data
+            this.search_results = this.formattedRows()
+          }
+        }).catch(er => {
+          console.log("getAll Axios ERR: " + er)
+        })
+      } catch (e){
+        console.log("Error at getAll after Axios: " + e)
+      }
     },
     getSearch(term) {
       this.resetAll()
@@ -122,6 +143,7 @@ name: "OrderMenu",
       }).then(response => {
         if (response.data) {
           this.search_results = response.data
+          this.search_results = this.formattedRows()
         }
         if (response.data.length === 0) {
           this.emptySearchAlert = true
@@ -129,19 +151,40 @@ name: "OrderMenu",
       })
 
     },
-    getModalSearch(term) { //order items
-      axios({
-        method: 'get',
-        url: 'http://127.0.0.1:8000/OrderItem/?search='+term
-      }).then(response => {
-        if (response.data) {
-          console.log('modal search: ' + response.data)
-          this.modal_search = response.data
-        }
-      })
+    // getModalSearch(term) { //order items
+    //   axios({
+    //     method: 'get',
+    //     url: 'http://127.0.0.1:8000/OrderItem/?search='+term
+    //   }).then(response => {
+    //     if (response.data) {
+    //       console.log('modal search: ' + response.data)
+    //       this.modal_search = response.data
+    //     }
+    //   })
+    // },
+    async getModalSearch(term) {
+      try {
+        await axios.get('http://127.0.0.1:8000/OrderItem/?search=' + term).then(response => {
+          if (response.data) {
+            console.log('modal search: ' + response.data)
+            this.modal_search = response.data
+          }
+        }).catch(er => {
+          console.log("getModalSearch Axios error: " + er)
+        });
+      } catch (e){
+        console.log("getModalSearch error after axios: " + e)
+      }
     },
     info(item) {
-      this.getModalSearch(item.order_id)
+      try {
+        this.getModalSearch(item.order_id);
+      } catch (e){
+        console.log("info error: " + e)
+      } finally {
+        this.$root.$emit('bv::show::modal', this.modalInfo.id)
+      }
+
       console.log(item)
       this.modalInfo.content = item
       this.modalInfo.title = item.customer

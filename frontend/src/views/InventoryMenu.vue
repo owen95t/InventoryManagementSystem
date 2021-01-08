@@ -343,12 +343,12 @@ export default {
             // console.log("idReq response data: " + response.data)
             this.listOptions = response.data
             this.optionListCreate(this.listOptions)
+            this.loading = false
           }
         }).catch((er) => {
           console.log("idReq ERROR: " + er)
-        }).finally(() => {
-          this.loading = false
-        });
+          console.log("idReq ERROR STATUS: " + er.status)
+        })
       } catch (ex){
         console.log("idReq error ex: " + ex)
       }
@@ -383,10 +383,14 @@ export default {
       this.dropDownSelected = ''
       this.modalKey = 0
       this.chosenItem = ''
+      this.loading = true;
     },
     async info(item, index) {
+      this.modalInfo.content = item
       try {
-        this.idReq(item.item_id);
+        if(item.item_id.length > 0){
+          await this.idReq(item.item_id);
+        }
       } catch (e){
         console.log(e)
       } finally {
@@ -396,7 +400,6 @@ export default {
       console.log("Item: " + item + "index: " + index)
       this.modalInfo.title = ''
       // this.modalInfo.content = JSON.stringify(item, null, 2)
-      this.modalInfo.content = item
     },
     resetAll() {
       this.fields = ''
