@@ -307,34 +307,6 @@ export default {
         })
       }
     },
-    async idRequest(term) {
-      if (this.search_term !== '' || this.search_term !== null) {
-        axios({
-          method: 'get',
-          url: 'http://127.0.0.1:8000/Item/?search='+term
-        }).then(response =>{
-          console.log('idRequest Data: '+response.data);
-          if(response.data){
-            this.listOptions = response.data
-            this.optionListCreate(this.listOptions)
-          }
-          if (this.listOptions.length === 0) {
-            console.log('LIST OF ITEMS EMPTY: idRequest')
-          }
-        }).catch((error) => {
-          if (error.response) {
-            console.log('RESPONSE ERROR');
-            console.log(error.response.data)
-            console.log(error.response.status);
-            console.log(error.response.headers);
-          }else if (error.request) {
-            console.log('REQUEST ERROR for idRequest', error.request);
-          } else {
-            console.log('ERROR IN GET ITEMS', error.message);
-          }
-        })
-      }
-    },
     async idReq(term) {
       console.log("idReq Called")
       try {
@@ -385,11 +357,11 @@ export default {
       this.chosenItem = ''
       this.loading = true;
     },
-    async info(item, index) {
+    info(item, index) {
       this.modalInfo.content = item
       try {
         if(item.item_id.length > 0){
-          await this.idReq(item.item_id);
+          this.idReq(item.item_id);
         }
       } catch (e){
         console.log(e)
@@ -424,8 +396,8 @@ export default {
   watch: {
     dropDownSelected() {
       try {
-        for (let i = 0; i <= this.listOptions.length; i++){
-          if(this.listOptions[i].item_sku === this.dropDownSelected){ // TODO : figure out how to fix this error
+        for (let i = 0; i <= this.options.length; i++){
+          if(this.options[i].value === this.dropDownSelected){ // TODO : figure out how to fix this error
             this.chosenItem = this.listOptions[i]
           }
         }
