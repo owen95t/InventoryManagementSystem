@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     'api',
     'django_filters',
 
-    'django.contrib.postgres',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -31,6 +31,9 @@
           first-text="First"
           last-text="Last">
         </b-pagination>
+        <span style="margin: 0 0 0 0">
+          <b-form-select v-model="perPage" :options="perPageOptions"></b-form-select>
+        </span>
         <b-container class="resultscontainer">
         <!-- CONTENT for RESULTS  -->
         <b-table
@@ -109,7 +112,7 @@ export default {
   data() {
     return{
       currentPage: 1,
-      perPage: 7,
+      perPage: 5,
       search_term: '',
       fields: '',
       idFields: [{
@@ -195,6 +198,22 @@ export default {
         value: '12'
       }],
       loading: true,
+      perPageOptions: [{
+        value: 5,
+        text: "5"
+      }, {
+        value: 10,
+        text: "10"
+      }, {
+        value: 15,
+        text: "15"
+      }, {
+        value: 20,
+        text: "20"
+      }, {
+        value: "all",
+        text: "All"
+      }]
     }
   },
   mounted() {
