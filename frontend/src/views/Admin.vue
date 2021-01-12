@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="admin">
     <h1>ADMIN PAGE</h1>
     <h3>Post here</h3>
     <ul>
-      <li><router-link to="/item">Item Add</router-link></li>
+      <li><router-link to="adminView/item">Item Add</router-link></li>
     </ul>
   </div>
 </template>

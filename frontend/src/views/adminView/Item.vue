@@ -1,8 +1,19 @@
 <template>
-  <div>
-    <b-form>
+  <div class="item">
+    <h1 class="text-center">Edit Page</h1>
 
-    </b-form>
+    <h3 class="text-center">Choose from options below:</h3>
+
+    <b-container>
+      <div id="buttonRows">
+        <b-button-group class="align-content-center">
+
+
+        <b-button variant="outline-primary">Add/Bulk Add</b-button>
+        <b-button variant="outline-primary">Edit/Bulk Edit</b-button>
+          </b-button-group>
+      </div>
+    </b-container>
   </div>
 </template>
 
@@ -34,11 +45,20 @@ export default {
     },
     formatData() {
 
+    },
+    opened() {
+      console.log("Item Edit Page")
     }
+  },
+  mounted() {
+    this.opened()
   }
 }
 </script>
 
 <style scoped>
+
+#buttonRows {
+}
 
 </style>

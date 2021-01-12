@@ -21,19 +21,26 @@
         </b-alert>
       </b-container>
       <b-container>
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="rows"
-          :per-page="perPage"
-          aria-controls="my-table"
-          class="justify-content-center"
-          style="margin-top: 15px"
-          first-text="First"
-          last-text="Last">
-        </b-pagination>
-        <span style="margin: 0 0 0 0">
-          <b-form-select v-model="perPage" :options="perPageOptions"></b-form-select>
-        </span>
+        <b-row>
+          <b-col></b-col>
+          <b-col>
+            <b-pagination
+              v-model="currentPage"
+              :total-rows="rows"
+              :per-page="perPage"
+              aria-controls="my-table"
+              class="justify-content-center"
+              style="margin-top: 15px"
+              first-text="First"
+              last-text="Last">
+            </b-pagination>
+          </b-col>
+          <b-col>
+            <span>
+              <b-form-select v-model="perPage" :options="perPageOptions" class="justify-content-center" style="margin-top: 15px"></b-form-select>
+            </span>
+          </b-col>
+        </b-row>
         <b-container class="resultscontainer">
         <!-- CONTENT for RESULTS  -->
         <b-table
@@ -56,17 +63,9 @@
             <div class="text-center">
               <b-spinner variant="primary" label="Spinning" v-if="loading"></b-spinner>
             </div>
-<!--            <pre>-->
-<!--              {{this.listOptions}}-->
-<!--            </pre>-->
             <div>
               <div>Select Size: </div>
               <b-form-select v-model="dropDownSelected" :options="options"></b-form-select>
-<!--              <select v-model="dropDownSelected.item_sku">-->
-<!--                <option v-for="item in listOptions" :value="item.item_size" v-bind:key="item.item_id">-->
-<!--                  {{item.item_size}}-->
-<!--                </option>-->
-<!--              </select>-->
             </div>
             <div style="margin-top: 20px">Item Information: </div>
             <div id="info" class="modalinfo">

@@ -135,33 +135,24 @@ name: "OrderMenu",
         console.log("Error at getAll after Axios: " + e)
       }
     },
-    getSearch(term) {
+    async getSearch(term) {
       this.resetAll()
-      axios({
-        method: 'get',
-        url: 'http://127.0.0.1:8000/Order/?search=' + term
-      }).then(response => {
-        if (response.data) {
-          this.search_results = response.data
-          this.search_results = this.formattedRows()
-        }
-        if (response.data.length === 0) {
-          this.emptySearchAlert = true
-        }
-      })
+      try{
+        axios.get('http://127.0.0.1:8000/Order/?search=' + term).then(response => {
+          if (response.data) {
+            this.search_results = response.data
+            this.search_results = this.formattedRows
+          } else if (response.data.length === 0) {
+            this.emptySearchAlert = true
+          }
+        }).catch(error => {
+          console.log('getSearch ORDERMENU error: ' + error.status)
 
+        })
+      }catch (e){
+        console.log("Error Status: " + e.response.status);
+      }
     },
-    // getModalSearch(term) { //order items
-    //   axios({
-    //     method: 'get',
-    //     url: 'http://127.0.0.1:8000/OrderItem/?search='+term
-    //   }).then(response => {
-    //     if (response.data) {
-    //       console.log('modal search: ' + response.data)
-    //       this.modal_search = response.data
-    //     }
-    //   })
-    // },
     async getModalSearch(term) {
       try {
         await axios.get('http://127.0.0.1:8000/OrderItem/?search=' + term).then(response => {
@@ -176,9 +167,11 @@ name: "OrderMenu",
         console.log("getModalSearch error after axios: " + e)
       }
     },
-    info(item) {
+    async info(item) {
       try {
-        this.getModalSearch(item.order_id);
+        await this.getModalSearch(item.order_id).catch(error => {
+          console.log("order menu modal info error: " + error)
+        });
       } catch (e){
         console.log("info error: " + e)
       } finally {
