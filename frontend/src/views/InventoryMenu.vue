@@ -266,7 +266,6 @@ export default {
             console.log('RESPONSE ERROR');
             console.log(error.response.data)
             console.log(error.response.status);
-            console.log(error.response.headers);
           }else if (error.request) {
             console.log('REQUEST ERROR', error.request);
           } else {
@@ -275,31 +274,26 @@ export default {
         })
       }
     },
-    getSearch(term) {
+    async getSearch(term) {
       if (this.search_term !== '' || this.search_term !== null) {
-        axios({
+        await axios({
           method: 'get',
           url: 'http://127.0.0.1:8000/ItemID/?search='+term
         }).then(response =>{
           if(response.data){
             console.log('GET SEARCH: ' + response.data);
             this.search_results = response.data
-
             if (this.search_results.length === 0) {
               console.log('getSearch RESPONSE EMPTY');
               console.log('Commence search by sku')
               this.searchSKU(term)
             }
-            // else {
-            //  this.idRequest(term);
-            // }
           }
         }).catch((error) => {
           if (error.response) {
             console.log('RESPONSE ERROR');
             console.log(error.response.data)
             console.log(error.response.status);
-            console.log(error.response.headers);
           }else if (error.request) {
             console.log('REQUEST ERROR', error.request);
           } else {
@@ -389,7 +383,6 @@ export default {
 
       console.log("Item: " + item + "index: " + index)
       this.modalInfo.title = ''
-      // this.modalInfo.content = JSON.stringify(item, null, 2)
     },
     resetAll() {
       this.fields = ''
@@ -415,7 +408,7 @@ export default {
     dropDownSelected() {
       try {
         for (let i = 0; i <= this.options.length; i++){
-          if(this.options[i].value === this.dropDownSelected){ // TODO : figure out how to fix this error
+          if(this.options[i].value === this.dropDownSelected){
             this.chosenItem = this.listOptions[i]
           }
         }
@@ -425,10 +418,6 @@ export default {
       }
 
     },
-    // picked: function () {
-    //   console.log('watching: picked changed')
-    //   this.resetRadio()
-    // }
   }
 }
 </script>
