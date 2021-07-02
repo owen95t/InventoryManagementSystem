@@ -2,31 +2,35 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "description": "## Project setup ``` npm install ```",
+  "author": "",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
+  "main": "babel.config.js",
   "dependencies": {
     "@popperjs/core": "^2.5.3",
+    "@vue/cli": "^4.5.13",
     "axios": "^0.21.1",
     "bootstrap-vue": "^2.17.3",
     "core-js": "^3.6.5",
     "highlight.js": "^10.5.0",
     "jquery": "^3.5.1",
     "register-service-worker": "^1.7.1",
-    "vue": "^2.6.11",
+    "vue": "^2.6.13",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.11.5",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-pwa": "~4.5.0",
+    "@vue/cli-plugin-babel": "^4.5.12",
+    "@vue/cli-plugin-eslint": "^4.5.12",
+    "@vue/cli-plugin-pwa": "^4.5.12",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
+    "@vue/cli-service": "^4.1.1",
     "babel-eslint": "^10.1.0",
     "bootstrap": "^4.5.3",
     "eslint": "^6.7.2",
@@ -57,5 +61,6 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "license": "ISC"
 }

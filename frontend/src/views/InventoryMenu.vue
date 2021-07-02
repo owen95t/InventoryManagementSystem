@@ -369,7 +369,7 @@ export default {
       this.chosenItem = ''
       this.loading = true;
     },
-    info(item, index) {
+    info(item) {
       this.modalInfo.content = item
       try {
         if(item.item_id.length > 0){
@@ -381,7 +381,8 @@ export default {
         this.$root.$emit('bv::show::modal', this.modalInfo.id)
       }
 
-      console.log("Item: " + item + "index: " + index)
+      //console.log("Item: " + item + "index: " + index)
+      console.log("Item: " + item)
       this.modalInfo.title = ''
     },
     resetAll() {
@@ -406,6 +407,7 @@ export default {
   },
   watch: {
     dropDownSelected() {
+      console.log('DDS: ' + this.dropDownSelected)
       try {
         for (let i = 0; i <= this.options.length; i++){
           if(this.options[i].value === this.dropDownSelected){

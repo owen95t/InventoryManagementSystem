@@ -147,13 +147,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = [
-    'https://localhost:3000',
+    'http://localhost:3000',
     'http://localhost:8080',
     'http://192.168.0.10:8080',
     'http://192.168.1.33:8080',
+    'http://192.168.1.36:8080'
 ]
 
 REST_FRAMEWORK = {
